@@ -1,0 +1,132 @@
+
+{
+    "listeners": [
+        {
+            "address": "0.0.0.0",
+            "port": 2333,
+            "https": false
+        }
+    ],
+    "db_clients": [
+        {
+            "rdbms": "mysql",
+            "host": "127.0.0.1",
+            "port": 3306,
+            "dbname": "sale",
+            "user": "wei",
+            "passwd": "123456",
+            "is_fast": false,
+            "number_of_connections": 5
+        }
+    ],
+    "app": {
+
+        "number_of_threads": 8,
+        "enable_session": true,
+        "session_timeout": 120,
+        "document_root": "./views",
+        "home_page": "index.html",
+        "use_implicit_page": true,
+        "implicit_page": "index.html",
+
+        "upload_path": "./uploads",
+        "file_types": [
+            "gif",
+            "png",
+            "jpg",
+            "js",
+            "css",
+            "html",
+            "ico",
+            "swf",
+            "xap",
+            "apk",
+            "cur",
+            "xml"
+        ],
+        "max_connections": 100000,
+        "max_connections_per_ip": 0,
+        "load_dynamic_views": true,
+        "dynamic_views_path": [
+            "./views"
+        ],
+
+        "dynamic_views_output_path": "./build",
+
+        "enable_unicode_escaping_in_json": true,
+
+        "float_precision_in_json": {
+
+            "precision": 0,
+
+            "precision_type": "significant"
+        },
+
+        "log": {
+
+            "logfile_base_name": "",
+
+            "log_size_limit": 100000000,
+
+            "log_level": "DEBUG"
+        },
+        //run_as_daemon: False by default
+        "run_as_daemon": false,
+        //handle_sig_term: True by default
+        "handle_sig_term": true,
+        //relaunch_on_error: False by default, if true, the program will be restart by the parent after exiting;
+        "relaunch_on_error": false,
+        //use_sendfile: True by default, if true, the program
+        //uses sendfile() system-call to send static files to clients;
+        "use_sendfile": true,
+        //use_gzip: True by default, use gzip to compress the response body's content;
+        "use_gzip": true,
+        //use_brotli: False by default, use brotli to compress the response body's content;
+        "use_brotli": false,
+        //static_files_cache_time: 5 (seconds) by default, the time in which the static file response is cached,
+        //0 means cache forever, the negative value means no cache
+        "static_files_cache_time": 5,
+        //simple_controllers_map: Used to configure mapping from path to simple controller
+        //idle_connection_timeout: Defaults to 60 seconds, the lifetime
+        //of the connection without read or write
+        "idle_connection_timeout": 60,
+        //server_header_field: Set the 'Server' header field in each response sent by drogon,
+        //empty string by default with which the 'Server' header field is set to "Server: drogon/version string\r\n"
+        "server_header_field": "",
+        //enable_server_header: Set true to force drogon to add a 'Server' header to each HTTP response. The default
+        //value is true.
+        "enable_server_header": true,
+        //enable_date_header: Set true to force drogon to add a 'Date' header to each HTTP response. The default
+        //value is true.
+        "enable_date_header": true,
+        //keepalive_requests: Set the maximum number of requests that can be served through one keep-alive connection.
+        //After the maximum number of requests are made, the connection is closed.
+        //The default value of 0 means no limit.
+        "keepalive_requests": 0,
+        //pipelining_requests: Set the maximum number of unhandled requests that can be cached in pipelining buffer.
+        //After the maximum number of requests are made, the connection is closed.
+        //The default value of 0 means no limit.
+        "pipelining_requests": 0,
+        //gzip_static: If it is set to true, when the client requests a static file, drogon first finds the compressed
+        //file with the extension ".gz" in the same path and send the compressed file to the client.
+        //The default value of gzip_static is true.
+        "gzip_static": true,
+        //br_static: If it is set to true, when the client requests a static file, drogon first finds the compressed
+        //file with the extension ".br" in the same path and send the compressed file to the client.
+        //The default value of br_static is true.
+        "br_static": true,
+        //client_max_body_size: Set the maximum body size of HTTP requests received by drogon. The default value is "1M".
+        //One can set it to "1024", "1k", "10M", "1G", etc. Setting it to "" means no limit.
+        "client_max_body_size": "1M",
+        //max_memory_body_size: Set the maximum body size in memory of HTTP requests received by drogon. The default value is "64K" bytes.
+        //If the body size of a HTTP request exceeds this limit, the body is stored to a temporary file for processing.
+        //Setting it to "" means no limit.
+        "client_max_memory_body_size": "64K",
+        //client_max_websocket_message_size: Set the maximum size of messages sent by WebSocket client. The default value is "128K".
+        //One can set it to "1024", "1k", "10M", "1G", etc. Setting it to "" means no limit.
+        "client_max_websocket_message_size": "128K",
+        //reuse_port: Defaults to false, users can run multiple processes listening on the same port at the same time.
+        "reuse_port": false
+    },
+    "custom_config": {}
+}
