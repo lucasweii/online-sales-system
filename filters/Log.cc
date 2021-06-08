@@ -4,10 +4,10 @@
  *
  */
 
-#include "log.h"
+#include "Log.h"
 #include <spdlog/spdlog.h>
 using namespace drogon;
-void log::doFilter(const HttpRequestPtr &req,
+void Log::doFilter(const HttpRequestPtr &req,
                          FilterCallback &&fcb,
                          FilterChainCallback &&fccb)
 {

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<%c++
+bool wrong=@@.get<bool>("wrong");
+%>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>买多多</title>
+
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="css/google_font.css">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="css/all.min.css">
+  <!-- icheck bootstrap -->
+  <link rel="stylesheet" href="css/icheck-bootstrap.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="css/adminlte.min.css">
+</head>
+<body class="hold-transition login-page" background="resources/12308.jpg">
+<div class="login-box">
+  <!-- /.login-logo -->
+  <div class="card card-outline card-secondary">
+    <div class="card-header text-center">
+      <b>买</b>多多</a>
+    </div>
+    <div class="card-body">
+      <p class="login-box-msg">开始你的购物之旅</p>
+
+      <form action="/login" method="post">
+        <div class="input-group mb-3">
+          <input type="text" id="uid" class="form-control" placeholder="账号" name="uid" onblur="checkuid()" required="required">
+          <p id="uid_error" style="margin-bottom: -2px;color: red;"></p>
+        </div>
+        <div class="input-group mb-3">
+          <input type="password" id="pwd" class="form-control" placeholder="密码" name="pwd" onblur="checkpwd()" required="required">
+          <p id="pwd_error" style="margin-bottom: -2px;color: red;"></p>
+        </div>
+        <div class="row">
+          <div class="col-6">
+            <div class="icheck-primary">
+              <input type="checkbox" id="remember" name="remember" value="on">
+              <label for="remember">
+                请记住我
+              </label>
+            </div>
+          </div>
+          <!-- /.col -->
+          <div class="col-3">
+            <button type="submit" class="btn btn-outline-success btn-block">登录</button>
+          </div>
+          <div class="col-3">
+            <button type="button" class="btn btn-outline-info btn-block">
+              <a href="/register">注册</a>
+            </button>
+          </div>
+          <!-- /.col -->
+        </div>
+      </form>
+      <%c++ if(wrong) {%>
+      <div class="alert alert-default-danger alert-dismissible fade show">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>错误!</strong> 帐号或密码错误。
+      </div>
+      <%c++ } %>
+    </div>
+    <!-- /.card-body -->
+  </div>
+  <!-- /.card -->
+</div>
+<!-- /.login-box -->
+
+<!-- jQuery -->
+<script src="js/jquery.min.js"></script>
+<!-- Bootstrap 4 -->
+<script src="js/bootstrap.bundle.min.js"></script>
+<!-- AdminLTE App -->
+<script src="js/adminlte.min.js"></script>
+<script>
+
+  function checkuid() {
+    $('#uid_error').html('');
+    if ($.trim($('#uid').val()).length > 10) {
+      $('#uid_error').html('已超过10个字符！');
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  function checkpwd(){
+    $('#pwd_error').html('');
+    if ($.trim($('#pwd').val()).length > 16) {
+      $('#pwd_error').html('已超过16个字符！');
+      return false;
+    } else {
+      return true;
+    }
+  }
+</script>
+</body>
+</html>

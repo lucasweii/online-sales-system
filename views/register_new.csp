@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<%c++
+bool wrong=@@.get<bool>("wrong");
+  %>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>买多多</title>
+
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="css/google_font.css">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="css/all.min.css">
+  <!-- icheck bootstrap -->
+  <link rel="stylesheet" href="css/icheck-bootstrap.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="css/adminlte.min.css">
+</head>
+<style>
+  .conceal{
+    position: absolute;
+    top: 15px; right: 15px;
+    width: 30px; height: 30px;
+    background-image: url(resources/eye.png);
+    background-size: 100% 100%;
+    cursor: pointer;
+  }
+</style>
+<body class="hold-transition register-page"  background="resources/12308.jpg">
+<div class="register-box">
+  <div class="card card-outline card-primary">
+    <div class="card-header text-center">
+      <b>买</b>多多</a>
+    </div>
+    <div class="card-body">
+      <p class="login-box-msg">注册一个新用户</p>
+
+      <form action="/register" method="post">
+        <div class="input-group mb-3">
+          <input type="text" id="uid" class="form-control" placeholder="帐号" name="uid" onblur="checkuid()" required="required">
+          <p id="uid_error" style="margin-bottom: -2px;color: red;"></p>
+        </div>
+        <div class="input-group mb-3">
+          <input type="text" id="name" class="form-control" placeholder="姓名" name="name" required="required">
+          <p id="name_error" style="margin-bottom: -2px;color: red;"></p>
+        </div>
+        <div class="input-group mb-3">
+          <input type="password" id="pwd" class="form-control" placeholder="密码" name="pwd" onblur="checkpwd()" required="required">
+          <p id="pwd_error" style="margin-bottom: -2px;color: red;"></p>
+        </div>
+        <div class="input-group mb-3">
+          <input type="password" id="pwd_retry" class="form-control" placeholder="再次确认密码" name="pwd_retry" onblur="checkpwd_retry()" required="required">
+          <p id="pwd_retry_error" style="margin-bottom: -2px;color: red;"></p>
+        </div>
+        <div class="input-group mb-3">
+          <input type="text" id="account" class="form-control" placeholder="银行账户" name="account" required="required">
+          <p id="account_error" style="margin-bottom: -2px;color: red;"></p>
+        </div>
+        <div class="row">
+          <div class="col-8">
+            <div class="icheck-primary">
+              <input type="checkbox" id="is_retailer" name="retailer" value="on">
+              <label for="is_retailer">
+                我是商家
+              </label>
+            </div>
+          </div>
+          <!-- /.col -->
+          <div class="col-4">
+            <button type="submit" class="btn btn-primary btn-block">注册</button>
+          </div>
+          <!-- /.col -->
+        </div>
+      </form>
+      <%c++ if(wrong) {%>
+      <div class="alert alert-default-danger alert-dismissible fade show">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>错误!</strong> 帐号已被注册！
+      </div>
+      <%c++ } %>
+    </div>
+    <!-- /.form-box -->
+  </div><!-- /.card -->
+</div>
+<!-- /.register-box -->
+
+<!-- jQuery -->
+<script src="js/jquery.min.js"></script>
+<!-- Bootstrap 4 -->
+<script src="js/bootstrap.bundle.min.js"></script>
+<!-- AdminLTE App -->
+<script src="js/adminlte.min.js"></script>
+
+<script>
+
+  function checkuid() {
+    if ($.trim($('#uid').val()).length > 10) {
+      $('#uid_error').html('已超过10个字符！');
+      return false;
+    } else {
+      $('#uid_error').html('');
+      return true;
+    }
+  }
+
+  function checkpwd(){
+    if ($.trim($('#pwd').val()).length > 16) {
+      $('#pwd_error').html('已超过16个字符！');
+      return false;
+    } else {
+      $('#pwd_error').html('');
+      return true;
+    }
+  }
+
+  function checkpwd_retry(){
+    const length = $.trim($('#pwd_retry').val()).length;
+    if (length > 16) {
+      $('#pwd_retry_error').html('已超过16个字符！');
+      return false;
+    } else {
+      var pwd1 = $('#pwd').val()
+      var pwd2 = $('#pwd_retry').val()
+      if(pwd1.length != pwd2.length) {
+        $('#pwd_retry_error').html('两次输入的密码不相同');
+        return false;
+      }
+      for(var i = 0; i < length; i++) {
+        if(pwd1[i] !== pwd2[i]) {
+          $('#pwd_retry_error').html('两次输入的密码不相同');
+          return false
+        }
+      }
+      $('#pwd_retry_error').html('');
+      return true;
+    }
+  }
+</script>
+
+</body>
+</html>

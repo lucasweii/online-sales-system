@@ -28,6 +28,10 @@ add_executable(${PROJECT_NAME} main.cc)
 # and comment out the following lines
 find_package(Drogon CONFIG REQUIRED)
 target_link_libraries(${PROJECT_NAME} PRIVATE Drogon::Drogon)
+find_package(fmt CONFIG REQUIRED)
+target_link_libraries(${PROJECT_NAME} PRIVATE fmt::fmt)
+find_package(spdlog CONFIG REQUIRED)
+target_link_libraries(${PROJECT_NAME} PRIVATE spdlog::spdlog spdlog::spdlog_header_only)
 
 # ##############################################################################
 
@@ -47,6 +51,7 @@ aux_source_directory(filters FILTER_SRC)
 aux_source_directory(plugins PLUGIN_SRC)
 aux_source_directory(models MODEL_SRC)
 
+# uncomment following line to create views in compiling period
 drogon_create_views(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/views
                     ${CMAKE_CURRENT_BINARY_DIR})
 # use the following line to create views with namespaces.
@@ -65,5 +70,5 @@ target_sources(${PROJECT_NAME}
                ${MODEL_SRC})
 # ##############################################################################
 # uncomment the following line for dynamically loading views 
- set_property(TARGET ${PROJECT_NAME} PROPERTY ENABLE_EXPORTS ON)
+#set_property(TARGET ${PROJECT_NAME} PROPERTY ENABLE_EXPORTS ON)
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR})

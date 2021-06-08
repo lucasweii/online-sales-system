@@ -10,10 +10,10 @@
 using namespace drogon;
 
 
-class log : public HttpFilter<log>
+class Log : public HttpFilter<Log>
 {
   public:
-    log() {}
+    Log() {}
     virtual void doFilter(const HttpRequestPtr &req,
                           FilterCallback &&fcb,
                           FilterChainCallback &&fccb) override;
