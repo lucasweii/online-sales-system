@@ -6,7 +6,7 @@ using namespace orm;
 //add definition of your processing function here
 void User::login(const HttpRequestPtr &req, std::function<void(const HttpResponsePtr &)> &&callback) {
     if(req->method() == Get) {
-        auto res = HttpResponse::newHttpViewResponse("login.csp");
+        auto res = HttpResponse::newHttpViewResponse("user_login.csp");
         callback(res);
     } else if (req->method() == Post) {
         auto param = req->getParameters();
@@ -32,7 +32,7 @@ void User::login(const HttpRequestPtr &req, std::function<void(const HttpRespons
         } else {
             HttpViewData data;
             data.insert("wrong", true);
-            auto res = HttpResponse::newHttpViewResponse("login.csp", data);
+            auto res = HttpResponse::newHttpViewResponse("user_login.csp", data);
             callback(res);
         }
     }
@@ -40,7 +40,7 @@ void User::login(const HttpRequestPtr &req, std::function<void(const HttpRespons
 
 void User::registerUser(const HttpRequestPtr &req, function<void(const HttpResponsePtr &)> &&callback) {
     if(req->method() == Get) {
-        auto res = HttpResponse::newHttpViewResponse("register_new.csp");
+        auto res = HttpResponse::newHttpViewResponse("user_register.csp");
         callback(res);
     } else if(req->method() == Post) {
         auto param = req->getParameters();
@@ -72,7 +72,7 @@ void User::registerUser(const HttpRequestPtr &req, function<void(const HttpRespo
                         {
                             HttpViewData data;
                             data.insert("wrong", true);
-                            auto res = HttpResponse::newHttpViewResponse("register_new.csp", data);
+                            auto res = HttpResponse::newHttpViewResponse("user_register", data);
                             callback(res);
                         };
         }

@@ -22,7 +22,7 @@ bool wrong=@@.get<bool>("wrong");
     position: absolute;
     top: 15px; right: 15px;
     width: 30px; height: 30px;
-    background-image: url(resources/eye.png);
+    background-image: url(resources/profile_pic/eye.png);
     background-size: 100% 100%;
     cursor: pointer;
   }
