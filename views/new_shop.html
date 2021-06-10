@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<%c++
+bool wrong=@@.get<bool>("wrong");
+  %>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>买多多</title>
+
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet" href="css/google_font.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="css/all.min.css">
+    <!-- icheck bootstrap -->
+    <link rel="stylesheet" href="css/icheck-bootstrap.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="css/adminlte.min.css">
+  </head>
+  <body class="hold-transition register-page"  background="resources/12308.jpg">
+  <div class="register-box">
+    <div class="card card-outline card-primary">
+      <div class="card-header text-center">
+        <b>买</b>多多</a>
+      </div>
+      <div class="card-body">
+        <p class="login-box-msg">开立自己的小店</p>
+
+        <form action="/new_shop" method="post">
+          <div class="input-group mb-3">
+            <input type="text" id="name" class="form-control" placeholder="店名" name="name" required="required">
+          </div>
+          <div class="input-group mb-3">
+            <textarea type="text" id="descrp" class="form-control" placeholder="店铺描述" name="descrp" required="required"></textarea>
+          </div>
+          <div class="col-4">
+            <button type="submit" class="btn btn-primary btn-block">注册店铺</button>
+          </div>
+        </form>
+      </div>
+        <%c++ if(wrong) {%>
+        <div class="alert alert-default-danger alert-dismissible fade show">
+          <button type="button" class="close" data-dismiss="alert">&times;</button>
+          <strong>错误!</strong> 帐号已被注册！
+        </div>
+        <%c++ } %>
+      </div>
+      <!-- /.form-box -->
+    </div><!-- /.card -->
+  <!-- /.register-box -->
+
+  <!-- jQuery -->
+  <script src="js/jquery.min.js"></script>
+  <!-- Bootstrap 4 -->
+  <script src="js/bootstrap.bundle.min.js"></script>
+  <!-- AdminLTE App -->
+  <script src="js/adminlte.min.js"></script>
+
+  <script>
+
+    function checkuid() {
+      if ($.trim($('#uid').val()).length > 10) {
+        $('#uid_error').html('已超过10个字符！');
+        return false;
+      } else {
+        $('#uid_error').html('');
+        return true;
+      }
+    }
+
+    function checkpwd(){
+      if ($.trim($('#pwd').val()).length > 16) {
+        $('#pwd_error').html('已超过16个字符！');
+        return false;
+      } else {
+        $('#pwd_error').html('');
+        return true;
+      }
+    }
+
+    function checkpwd_retry(){
+      const length = $.trim($('#pwd_retry').val()).length;
+      if (length > 16) {
+        $('#pwd_retry_error').html('已超过16个字符！');
+        return false;
+      } else {
+        var pwd1 = $('#pwd').val()
+        var pwd2 = $('#pwd_retry').val()
+        if(pwd1.length != pwd2.length) {
+          $('#pwd_retry_error').html('两次输入的密码不相同');
+          return false;
+        }
+        for(var i = 0; i < length; i++) {
+          if(pwd1[i] !== pwd2[i]) {
+            $('#pwd_retry_error').html('两次输入的密码不相同');
+            return false
+          }
+        }
+        $('#pwd_retry_error').html('');
+        return true;
+      }
+    }
+  </script>
+
+  </body>
+</html>

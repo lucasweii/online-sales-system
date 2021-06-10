@@ -39,12 +39,14 @@
             "xap",
             "apk",
             "cur",
-            "xml"
+            "xml",
+            "svg",
+            "jpeg"
         ],
         "max_connections": 100000,
         "max_connections_per_ip": 0,
         "enable_unicode_escaping_in_json": true,
-
+        "client_max_body_size": "",
         "float_precision_in_json": {
 
             "precision": 0,

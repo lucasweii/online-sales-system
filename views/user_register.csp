@@ -17,16 +17,6 @@ bool wrong=@@.get<bool>("wrong");
   <!-- Theme style -->
   <link rel="stylesheet" href="css/adminlte.min.css">
 </head>
-<style>
-  .conceal{
-    position: absolute;
-    top: 15px; right: 15px;
-    width: 30px; height: 30px;
-    background-image: url(resources/profile_pic/eye.png);
-    background-size: 100% 100%;
-    cursor: pointer;
-  }
-</style>
 <body class="hold-transition register-page"  background="resources/12308.jpg">
 <div class="register-box">
   <div class="card card-outline card-primary">
