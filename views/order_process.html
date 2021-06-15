@@ -96,7 +96,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="pages/widgets.html" class="nav-link">
+                        <a href="pages/widgets.html" class="nav-link active">
                             <p>
                                 订单处理
                             </p>
@@ -124,7 +124,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nav-link active">
+                        <a href="#" class="nav-link">
                             <p>个人信息</p>
                         </a>
                     </li>
@@ -142,11 +142,8 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>[商店名]</h1>
+                        <h1 class="m-0">[商店名]</h1>
                     </div><!-- /.col -->
-                    <div class="col-sm-6">
-                        <a class="float-right mr-5" href="#">修改</a>
-                    </div>
                 </div><!-- /.row -->
             </div><!-- /.container-fluid -->
         </div>
@@ -154,52 +151,73 @@
         <section class="content">
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-md-4">
-
-                        <!-- Profile Image -->
-                        <div class="card card-primary card-outline">
-                            <div class="card-body box-profile">
-                                <div class="text-center">
-                                    <img class="profile-user-img img-fluid img-circle"
-                                         src="resources/profile_pic/images.jpeg"
-                                         alt="User profile picture">
+                    <div class="col-10 m-lg-auto">
+                        <form action="#">
+                            <div class="card-primary">
+                                <div class="card-header">
+                                    新的订单
                                 </div>
-
-                                <h3 class="profile-username text-center">[商家名字]</h3>
-
-                                <p class="text-muted text-center">Software Engineer</p>
-
-                                <ul class="list-group list-group-unbordered mb-3">
-                                    <li class="list-group-item">
-                                        <b>帐号</b> <p class="float-right">1322</p>
-                                    </li>
-                                    <li class="list-group-item">
-                                        <b>银行卡</b> <p class="float-right">543</p>
-                                    </li>
-                                </ul>
+                                <div class="card-body">
+                                        <table id="new_orders" class="table table-border">
+                                            <thead>
+                                            <tr>
+                                                <th>订单号</th>
+                                                <th>顾客号</th>
+                                                <th>商品编号</th>
+                                                <th>数量</th>
+                                                <th>备注</th>
+                                                <th>处理</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr>
+                                                <td>123</td>
+                                                <td>123132</td>
+                                                <td>12312dsd</td>
+                                                <td>3</td>
+                                                <td>加麻加辣</td>
+                                                <td>
+                                                    <form>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input" type="radio" name="process_1" id="send1" value="option1">
+                                                            <label class="form-check-label" for="send1">发货</label>
+                                                        </div>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input" type="radio" name="process_1" id="back1" value="option2">
+                                                            <label class="form-check-label" for="back1">退款</label>
+                                                        </div>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>123</td>
+                                                <td>123132</td>
+                                                <td>12312dsd</td>
+                                                <td>3</td>
+                                                <td>加麻加辣</td>
+                                                <td>
+                                                    <form>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input" type="radio" name="process_2" id="send2" value="send">
+                                                            <label class="form-check-label" for="send2">发货</label>
+                                                        </div>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input" type="radio" name="process_2" id="back2" value="back">
+                                                            <label class="form-check-label" for="back2">退款</label>
+                                                        </div>
+                                                    </form>
+                                                </td>
+                                        </table>
+                                </div>
                             </div>
-                            <!-- /.card-body -->
-                        </div>
+                            <button type="submit" class="btn btn-primary float-right">提交处理</button>
+                        </form>
                     </div>
-                    <div class="col-md-8">
-                        <div class="card card-primary">
-                            <div class="card-header">
-                                <h3 class="card-title">个人简介</h3>
-                            </div>
-                            <!-- /.card-header -->
-                            <div class="card-body">
-
-                                <p class="text">
-                                    B.S. in Computer Science from the University of Tennessee at Knoxville
-                                </p>
-
-                            </div>
-                            <!-- /.card-body -->
-                        </div>
-                    </div>
+                    <!-- /.col -->
                 </div>
                 <!-- /.row -->
-            </div><!-- /.container-fluid -->
+            </div>
+            <!-- /.container-fluid -->
         </section>
         <!-- Main content -->
         <!-- /.content -->

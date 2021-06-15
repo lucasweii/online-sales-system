@@ -103,7 +103,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="pages/widgets.html" class="nav-link">
+                        <a href="pages/widgets.html" class="nav-link active">
                             <p>
                                 历史订单
                             </p>
@@ -124,7 +124,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nav-link active">
+                        <a href="#" class="nav-link">
                             <p>个人信息</p>
                         </a>
                     </li>
@@ -145,7 +145,7 @@
                         <h1>[商店名]</h1>
                     </div><!-- /.col -->
                     <div class="col-sm-6">
-                        <a class="float-right mr-5" href="#">修改</a>
+                        <a class="float-right mr-5" href="#">历史账单</a>
                     </div>
                 </div><!-- /.row -->
             </div><!-- /.container-fluid -->
@@ -154,52 +154,49 @@
         <section class="content">
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-md-4">
-
-                        <!-- Profile Image -->
-                        <div class="card card-primary card-outline">
-                            <div class="card-body box-profile">
-                                <div class="text-center">
-                                    <img class="profile-user-img img-fluid img-circle"
-                                         src="resources/profile_pic/images.jpeg"
-                                         alt="User profile picture">
-                                </div>
-
-                                <h3 class="profile-username text-center">[商家名字]</h3>
-
-                                <p class="text-muted text-center">Software Engineer</p>
-
-                                <ul class="list-group list-group-unbordered mb-3">
-                                    <li class="list-group-item">
-                                        <b>帐号</b> <p class="float-right">1322</p>
-                                    </li>
-                                    <li class="list-group-item">
-                                        <b>银行卡</b> <p class="float-right">543</p>
-                                    </li>
-                                </ul>
-                            </div>
-                            <!-- /.card-body -->
-                        </div>
-                    </div>
-                    <div class="col-md-8">
-                        <div class="card card-primary">
+                    <div class="col-12">
+                        <div class="card">
                             <div class="card-header">
-                                <h3 class="card-title">个人简介</h3>
+                                <h3 class="card-title">历史订单</h3>
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body">
-
-                                <p class="text">
-                                    B.S. in Computer Science from the University of Tennessee at Knoxville
-                                </p>
-
+                                <table id="example2" class="table table-bordered table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>订单编号</th>
+                                        <th>用户ID</th>
+                                        <th>商品ID</th>
+                                        <th>数量</th>
+                                        <th>备注</th>
+                                        <th>状态</th>
+                                        <th>日期</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>1</td>
+                                            <td>123</td>
+                                            <td>1sd</td>
+                                            <td>3</td>
+                                            <td>加麻加辣</td>
+                                            <td>交易成功</td>
+                                            <td>2000-12-32 13:23:23</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                             <!-- /.card-body -->
                         </div>
+                        <!-- /.card -->
+
+                        <!-- /.card -->
                     </div>
+                    <!-- /.col -->
                 </div>
                 <!-- /.row -->
-            </div><!-- /.container-fluid -->
+            </div>
+            <!-- /.container-fluid -->
         </section>
         <!-- Main content -->
         <!-- /.content -->
