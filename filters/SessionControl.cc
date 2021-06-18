@@ -12,10 +12,10 @@ void SessionControl::doFilter(const HttpRequestPtr &req,
                          FilterCallback &&fcb,
                          FilterChainCallback &&fccb)
 {
-    if(req->session()->find("loggin")){
+    if(req->session()->find("login")){
         fccb();
     } else {
-        auto res = HttpResponse::newRedirectionResponse("/");
+        auto res = HttpResponse::newRedirectionResponse("/login");
         fcb(res);
     }
 }

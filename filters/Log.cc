@@ -5,7 +5,6 @@
  */
 
 #include "Log.h"
-#include <spdlog/spdlog.h>
 using namespace drogon;
 void Log::doFilter(const HttpRequestPtr &req,
                          FilterCallback &&fcb,
@@ -14,13 +13,13 @@ void Log::doFilter(const HttpRequestPtr &req,
     auto method = req->getMethod();
     switch (method) {
         case Get:
-            spdlog::info("Get {}", req->getPath());
+            LOG_DEBUG << "Get " << req->getPath();
             break;
         case Post:
-            spdlog::info("Post {}", req->getPath());
+            LOG_DEBUG << "Post " << req->getPath();
             break;
         case Put:
-            spdlog::info("Put {}", req->getPath());
+            LOG_DEBUG << "Put " << req->getPath();
             break;
     }
     fccb();

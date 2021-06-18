@@ -31,7 +31,7 @@ bool wrong=@@.get<bool>("wrong");
             <input type="text" id="name" class="form-control" placeholder="店名" name="name" required="required">
           </div>
           <div class="input-group mb-3">
-            <textarea type="text" id="descrp" class="form-control" placeholder="店铺描述" name="descrp" required="required"></textarea>
+            <textarea type="text" id="description" class="form-control" placeholder="店铺描述" name="description" required="required"></textarea>
           </div>
           <div class="col-4">
             <button type="submit" class="btn btn-primary btn-block">注册店铺</button>
@@ -41,7 +41,7 @@ bool wrong=@@.get<bool>("wrong");
         <%c++ if(wrong) {%>
         <div class="alert alert-default-danger alert-dismissible fade show">
           <button type="button" class="close" data-dismiss="alert">&times;</button>
-          <strong>错误!</strong> 帐号已被注册！
+          <strong>错误!</strong> 店铺名已被注册！
         </div>
         <%c++ } %>
       </div>

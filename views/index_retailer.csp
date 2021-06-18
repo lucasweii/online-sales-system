@@ -23,6 +23,8 @@
   * sidebar-collapse
   * sidebar-mini
 -->
+<%c++ using namespace std; %>
+<%c++ auto goods_data = @@.get<vector<unordered_map<string, string>> >("goods_data"); %>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
   <!-- Navbar -->
@@ -30,7 +32,7 @@
     <!-- Left navbar links -->
     <ul class="navbar-nav">
       <li class="nav-item d-none d-sm-inline-block">
-        <a href="index_retailer.html" class="nav-link">返回主页</a>
+        <a href="/index_retailer" class="nav-link">返回主页</a>
       </li>
     </ul>
 
@@ -62,7 +64,7 @@
         </div>
       </li>
       <li class="nav-item">
-        <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button">
+        <a class="nav-link" href="/logout">
           登出
         </a>
       </li>
@@ -78,10 +80,10 @@
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
         <div class="image">
         <!-- 放头像 -->
-          <img src="./resources/profile_pic/default_profile.jpeg" class="img-circle elevation-2" alt="User Image">
+          <img src=[[ user_pic ]] class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-          <a href="#" class="d-block">[商家姓名]</a>
+          <a href="#" class="d-block">[[user_name]]</a>
         </div>
       </div>
 
@@ -91,7 +93,7 @@
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
           <li class="nav-item">
-            <a href="./index_retailer.html" class="nav-link active">
+              <a href="#" class="nav-link active">
               <p>商品概览</p>
             </a>
           </li>
@@ -110,7 +112,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="pages/widgets.html" class="nav-link">
+            <a href="/new_goods" class="nav-link">
               <p>
                 商品上新
               </p>
@@ -142,7 +144,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">[商店名]</h1>
+            <h1 class="m-0">[[ shop_name ]]</h1>
           </div><!-- /.col -->
         </div><!-- /.row -->
       </div><!-- /.container-fluid -->
@@ -158,7 +160,7 @@
               <div class="card-header border-width-2">
                 <h3 class="card-title my-2">Products</h3>
                 <div class="card-tools">
-                  <form class="form-inline my-2 my-lg-0" action="#">
+                  <form class="form-inline my-2 my-lg-0">
                     <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="search">
                     <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
                   </form>
@@ -168,56 +170,53 @@
                 <table class="table table-striped table-valign-middle">
                   <thead>
                   <tr >
-                    <th class="text-center">商品名称</th>
+                    <th>商品图片</th>
+                    <th>商品名称</th>
+                    <th>商品描述</th>
                     <th>价格</th>
-                    <th>月销量</th>
+                    <th>折扣</th>
                     <th>库存</th>
                   </tr>
                   </thead>
                   <tbody>
+                  <%c++ for(auto &goods :goods_data){ %>
                   <tr>
                     <td>
+                      <img src={%  goods["pic_path"]  %}  alt="Product" class="img-lg mr-2">
+                    </td>
+                    <td>
                       <div class="row">
-                        <div class="col-4">
-                          <img src="resources/goods_pic/default_goods.png" alt="Product" class="img-lg mr-2">
-                        </div>
-                        <div class="col-6">
-                          <p class="m-4">
-                            <a href="#" class="text-lg">some products</a>
-                          </p>
+                        <a href={% "/goods?id=" + goods["id"] %}  class="text-lg">{% goods["name"] %}</a>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="row">
+                        <div class="text-wrap" style="width: 6rem;">
+                          {% goods["description"] %}
                         </div>
                       </div>
                     </td>
-                    <td>$13 USD</td>
-                    <td>
-                      <small class="text-success mr-1">
-                        12%
-                      </small>
-                      12,000
-                    </td>
+                    <td>{%  goods["price"] %}</td>
+                    <td>{%  goods["discount"] %}</td>
                     <td>
                       <div class="row">
-                        <div class="col-4">
-                          <p class="m-2">
-                            123
-                          </p>
-                        </div>
                         <div class="col-6">
-                          <form class="form-inline">
+                          <form class="form-inline"  action="/index_retailer" method="post">
                             <div>
-                              <input type="number" class="form-control mr-2" name="item@" placeholder="数量" style="width:100px">
+                              <input type="number" class="form-control mr-2" name={% "stock@"+goods["id"] %}  placeholder={% goods["stock"] %} style="width:100px">
                             </div>
                             <button type="submit" class="btn btn-info btn-sm">修改库存</button>
                           </form>
                         </div>
                         <div class="col-2">
-                          <form class="form-inline">
-                            <button type="submit" class="btn btn-danger btn-sm" name="item@" value="off">下架</button>
+                          <form class="form-inline"  action="/index_retailer" method="post">
+                            <button type="submit" class="btn btn-danger btn-sm" name={% "delete@"+goods["id"] %} value="off">下架</button>
                           </form>
                         </div>
                       </div>
                     </td>
                   </tr>
+                  <%c++ } %>
                   </tbody>
                 </table>
               </div>
