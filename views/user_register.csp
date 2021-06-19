@@ -17,7 +17,7 @@ bool wrong=@@.get<bool>("wrong");
   <!-- Theme style -->
   <link rel="stylesheet" href="css/adminlte.min.css">
 </head>
-<body class="hold-transition register-page"  background="resources/12308.jpg">
+<body class="hold-transition register-page"  background="resources/12308.jpg"  style="background-size: 100% 100%">
 <div class="register-box">
   <div class="card card-outline card-primary">
     <div class="card-header text-center">

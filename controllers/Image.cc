@@ -10,9 +10,8 @@ void Image::uploadImage(const HttpRequestPtr &req, std::function<void(const Http
         callback(resp);
         return;
     }
-    auto para = req->getParameters();
     auto &file = fileUpload.getFiles()[0];
-    file.save(std::string("./views/resources/") + image_type + "/" + para["name"]);
+    file.save(std::string("./views/resources/") + image_type + "/");
     auto resp = HttpResponse::newHttpResponse();
     resp->setStatusCode(k200OK);
     callback(resp);

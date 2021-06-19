@@ -24,7 +24,7 @@
 
         "number_of_threads": 8,
         "enable_session": true,
-        "session_timeout": 120,
+        "session_timeout": 300,
         "document_root": "./views",
         "upload_path": "./uploads",
         "file_types": [

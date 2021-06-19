@@ -1,8 +1,10 @@
 #include "User.h"
 #include <fmt/format.h>
+
 using namespace fmt;
 using namespace std;
 using namespace orm;
+
 //add definition of your processing function here
 void User::login(const HttpRequestPtr &req, std::function<void(const HttpResponsePtr &)> &&callback) {
     if(req->method() == Get) {
@@ -70,7 +72,7 @@ void User::registerUser(const HttpRequestPtr &req, function<void(const HttpRespo
                     print("insert into user success!\n");
                     req->session()->insert("login", true);
                     req->session()->insert("uid", uid);
-                    req->session()->insert("name", name);
+                    req->session()->insert("user_name", name);
                     req->session()->insert("is_retailer", isRetailer);
                     req->session()->insert("user_pic", "./resources/profile_pic/default.jpeg");
                     if(isRetailer){
@@ -132,4 +134,71 @@ void User::logout(const HttpRequestPtr &req, function<void(const HttpResponsePtr
     req->session()->clear();
     auto resp = HttpResponse::newRedirectionResponse("/login");
     callback(resp);
+}
+
+void
+User::profile(const HttpRequestPtr &req, function<void(const HttpResponsePtr &)> &&callback, const string &action) {
+    if (req->method() == Get) {
+        auto DbPtr = app().getDbClient();
+        Result r = DbPtr->execSqlSync(
+                "select * from `user` where `uid`=?",
+                req->session()->get<string>("uid")
+                );
+        assert(r.size() == 1);
+        HttpViewData data;
+        data.insert("isRetailer", req->session()->get<bool>("is_retailer"));
+        data.insert("uid", req->session()->get<string>("uid"));
+        data.insert("user_name", r[0]["name"].as<string>());
+        data.insert("user_pic", r[0]["profile_pic_path"].as<string>());
+        data.insert("account", r[0]["account"].as<string>());
+        data.insert("person_info", r[0]["person_info"].as<string>());
+        data.insert("pwd", r[0]["pwd"].as<string>());
+        if(action == "display"){
+            auto resp = HttpResponse::newHttpViewResponse("profile.csp", data);
+            callback(resp);
+        } else {
+            auto resp = HttpResponse::newHttpViewResponse("profile_modify.csp", data);
+            callback(resp);
+        }
+    } else if(req->method() == Post){
+        auto param = req->parameters();
+        for(auto &it : param){
+            fmt::print("{}:{}\n", it.first, it.second);
+        }
+        auto DbPtr = app().getDbClient();
+        if(param["profile_pic"].empty()) {
+            *DbPtr  << "update `user` set `name`=?, `pwd`=?, `account`=?, `person_info`=?"
+                       "where `uid`=?"
+                    << param["user_name"] << param["pwd"] << param["account"] << param["person_info"] << req->session()->get<string>("uid")
+                    >> [=, name=param["user_name"], id=param["user_id"]](const Result &r)
+                    {
+                        LOG_DEBUG << "modify user <name:" << name << "> profile information";
+                        req->session()->modify<string>("user_name",[=](string &old_name){
+                            old_name = name;
+                        });
+                    }
+                    >> [](const DrogonDbException &e)
+                    {
+                        LOG_DEBUG << e.base().what();
+                    };
+        } else {
+            *DbPtr  << "update `user` set `name`=?, `pwd`=?, `account`=?, `person_info`=?, `profile_pic_path`=?"
+                       "where `uid`=?"
+                    << param["user_name"] << param["pwd"] << param["account"] << param["person_info"] <<"./resources/profile_pic/" + param["profile_pic"]
+                    << req->session()->get<string>("uid")
+                    >> [=, name=param["user_name"]](const Result &r)
+                    {
+                        LOG_DEBUG << "modify user <name:" << name << "> profile information";
+                        req->session()->modify<string>("user_name",[=](string &old_name){
+                            old_name = name;
+                        });
+                    }
+                    >> [](const DrogonDbException &e)
+                    {
+                        LOG_DEBUG << e.base().what();
+                    };
+        }
+        auto resp = HttpResponse::newRedirectionResponse("/profile?action=display");
+        callback(resp);
+    }
 }

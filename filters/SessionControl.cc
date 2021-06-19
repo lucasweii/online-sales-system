@@ -15,6 +15,7 @@ void SessionControl::doFilter(const HttpRequestPtr &req,
     if(req->session()->find("login")){
         fccb();
     } else {
+        LOG_DEBUG << "user has not logged in, jump to login page";
         auto res = HttpResponse::newRedirectionResponse("/login");
         fcb(res);
     }

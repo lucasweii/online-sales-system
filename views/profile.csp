@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>商家主页</title>
+    <title>买多多</title>
 
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="css/google_font.css">
@@ -23,6 +23,7 @@
   * sidebar-collapse
   * sidebar-mini
 -->
+<%c++ auto isRetailer = @@.get<bool>("isRetailer"); %>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
     <!-- Navbar -->
@@ -30,7 +31,11 @@
         <!-- Left navbar links -->
         <ul class="navbar-nav">
             <li class="nav-item d-none d-sm-inline-block">
-                <a href="index_retailer.html" class="nav-link">返回主页</a>
+                <%c++ if(isRetailer) { %>
+                <a href="/index_retailer" class="nav-link">返回主页</a>
+                <%c++ } else { %>
+                <a href="/index_customer" class="nav-link">返回主页</a>
+                <%c++ } %>
             </li>
         </ul>
 
@@ -62,7 +67,7 @@
                 </div>
             </li>
             <li class="nav-item">
-                <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button">
+                <a class="nav-link" href="/logout">
                     登出
                 </a>
             </li>
@@ -78,10 +83,10 @@
             <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                 <div class="image">
                     <!-- 放头像 -->
-                    <img src="./resources/profile_pic/default_profile.jpeg" class="img-circle elevation-2" alt="User Image">
+                    <img src=[[ user_pic ]] class="img-circle elevation-2" alt="User Image">
                 </div>
                 <div class="info">
-                    <a href="#" class="d-block">[商家姓名]</a>
+                    <a href="#" class="d-block">[[ user_name ]]</a>
                 </div>
             </div>
 
@@ -90,8 +95,9 @@
                 <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                     <!-- Add icons to the links using the .nav-icon class
                          with font-awesome or any other icon font library -->
+                    <%c++ if(isRetailer) { %>
                     <li class="nav-item">
-                        <a href="./index_retailer.html" class="nav-link">
+                        <a href="/index_retailer" class="nav-link">
                             <p>商品概览</p>
                         </a>
                     </li>
@@ -110,24 +116,50 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="pages/widgets.html" class="nav-link">
+                        <a href="/new_goods" class="nav-link">
                             <p>
                                 商品上新
                             </p>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="pages/widgets.html" class="nav-link">
+                        <a href="/shop_manage" class="nav-link">
                             <p>
                                 商店管理
                             </p>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nav-link active">
+                        <a href="/profile?action=display" class="nav-link active">
                             <p>个人信息</p>
                         </a>
                     </li>
+                    <%c++ } else { %>
+                    <li class="nav-item">
+                        <a href="/index_customer" class="nav-link">
+                            <p>浏览商品</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="pages/widgets.html" class="nav-link">
+                            <p>
+                                我的订单
+                            </p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="pages/widgets.html" class="nav-link">
+                            <p>
+                                购物车
+                            </p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/profile?action=display" class="nav-link active">
+                            <p>个人信息</p>
+                        </a>
+                    </li>
+                    <%c++ } %>
                 </ul>
             </nav>
             <!-- /.sidebar-menu -->
@@ -141,12 +173,18 @@
         <div class="content-header">
             <div class="container-fluid">
                 <div class="row mb-2">
+                    <%c++ if(isRetailer) { %>
                     <div class="col-sm-6">
-                        <h1>[商店名]</h1>
+                        <h1>[[ shop_name ]]</h1>
                     </div><!-- /.col -->
                     <div class="col-sm-6">
-                        <a class="float-right mr-5" href="#">修改</a>
+                        <a class="float-right mr-5" href="/profile?action=modify">修改</a>
                     </div>
+                    <%c++ } else { %>
+                    <div class="col-12">
+                        <a class="float-right mr-5" href="/profile?action=modify">修改</a>
+                    </div>
+                    <%c++ } %>
                 </div><!-- /.row -->
             </div><!-- /.container-fluid -->
         </div>
@@ -161,20 +199,18 @@
                             <div class="card-body box-profile">
                                 <div class="text-center">
                                     <img class="profile-user-img img-fluid img-circle"
-                                         src="resources/profile_pic/images.jpeg"
+                                         src=[[ user_pic ]]
                                          alt="User profile picture">
                                 </div>
 
-                                <h3 class="profile-username text-center">[商家名字]</h3>
-
-                                <p class="text-muted text-center">Software Engineer</p>
+                                <h3 class="profile-username text-center">[[ user_name ]]</h3>
 
                                 <ul class="list-group list-group-unbordered mb-3">
                                     <li class="list-group-item">
-                                        <b>帐号</b> <p class="float-right">1322</p>
+                                        <b>帐号</b> <p class="float-right">[[ uid ]]</p>
                                     </li>
                                     <li class="list-group-item">
-                                        <b>银行卡</b> <p class="float-right">543</p>
+                                        <b>银行卡</b> <p class="float-right">[[ account ]]</p>
                                     </li>
                                 </ul>
                             </div>
@@ -190,7 +226,7 @@
                             <div class="card-body">
 
                                 <p class="text">
-                                    B.S. in Computer Science from the University of Tennessee at Knoxville
+                                    [[ person_info ]]
                                 </p>
 
                             </div>

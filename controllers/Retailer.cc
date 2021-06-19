@@ -90,7 +90,7 @@ void Retailer::retailerIndex(const HttpRequestPtr &req, function<void(const Http
         }
         auto resp = HttpResponse::newRedirectionResponse("/index_retailer");
         callback(resp);
-    } else {
+    } else if(req->method() == Get){
         auto DbPtr = app().getDbClient();
         Result shop_ret = DbPtr->execSqlSync(
                 "select `name`, `id` from `shop` where `uid` = ?",
@@ -188,6 +188,100 @@ void Retailer::goodsDetail(const HttpRequestPtr &req, function<void(const HttpRe
         }
         auto resp = HttpResponse::newRedirectionResponse("/index_retailer");
         callback(resp);
+    }
+}
+
+void Retailer::shop(const HttpRequestPtr &req, function<void(const HttpResponsePtr &)> &&callback) {
+    if(req->method() == Get) {
+        auto DbPtr = app().getDbClient();
+        Result r = DbPtr->execSqlSync("select * from `shop` where `uid` = ?", req->session()->get<string>("uid"));
+        assert(r.size() == 1);
+        HttpViewData data;
+        data.insert("shop_name", r[0]["name"].as<string>());
+        data.insert("description", r[0]["description"].as<string>());
+        data.insert("user_name", req->session()->get<string>("user_name"));
+        data.insert("user_pic", req->session()->get<string>("user_pic"));
+        auto resp = HttpResponse::newHttpViewResponse("shop_manage.csp", data);
+        callback(resp);
+    }
+}
+
+void Retailer::shopModify(const HttpRequestPtr &req, function<void(const HttpResponsePtr &)> &&callback) {
+    auto DbPtr = app().getDbClient();
+    if(req->method() == Get) {
+        Result r = DbPtr->execSqlSync("select * from `shop` where `uid` = ?", req->session()->get<string>("uid"));
+        assert(r.size() == 1);
+        HttpViewData data;
+        data.insert("shop_name", r[0]["name"].as<string>());
+        data.insert("description", r[0]["description"].as<string>());
+        data.insert("user_name", req->session()->get<string>("user_name"));
+        data.insert("user_pic", req->session()->get<string>("user_pic"));
+        auto resp = HttpResponse::newHttpViewResponse("shop_modify.csp", data);
+        callback(resp);
+    } else if(req->method() == Post){
+        auto param = req->parameters();
+        for(const auto &it : param) {
+            fmt::print("{}:{}\n", it.first, it.second);
+        }
+        {
+            auto txn = DbPtr->newTransaction();
+            *txn    << "select * from `shop` where `name`=? and `name` != ?"
+                    << param["new_name"] << req->session()->get<string>("shop_name")
+                    >> [=, name=param["new_name"], description=param["description"], id=req->session()->get<int>("shop_id")](const Result &r)
+                    {
+                        if(!r.empty()) {
+                            LOG_DEBUG << "shop name : "<< name << " is repeated";
+                            *txn    << "select * from `shop` where `id`=?"
+                                    << id
+                                    >> [=](const Result &r)
+                                    {
+                                        assert(r.size() == 1);
+                                        HttpViewData data;
+                                        data.insert("shop_name", r[0]["name"].as<string>());
+                                        data.insert("description", r[0]["description"].as<string>());
+                                        LOG_DEBUG << "break0";
+                                        data.insert("user_name", req->session()->get<string>("user_name"));
+                                        data.insert("user_pic", req->session()->get<string>("user_pic"));
+                                        LOG_DEBUG << "break1";
+                                        data.insert("wrong", true);
+                                        data.insert("new_name", name);
+                                        auto resp = HttpResponse::newHttpViewResponse("shop_modify.csp", data);
+                                        callback(resp);
+                                    }
+                                    >> [=](const DrogonDbException &e)
+                                    {
+                                        LOG_DEBUG << e.base().what();
+                                        auto resp = HttpResponse::newRedirectionResponse("/index_retailer");
+                                        callback(resp);
+                                    };
+                        } else {
+                            *txn    << "update `shop` set `name` = ?, `description`=? where `id`=?"
+                                    << name << description << id
+                                    >> [=](const Result &r)
+                                    {
+                                        req->session()->modify<string>("shop_name",[=](string &old_name){
+                                            old_name = name;
+                                        });
+                                        LOG_DEBUG << "modify shop <id:" << id << "> information success!";
+                                        auto resp = HttpResponse::newRedirectionResponse("/index_retailer");
+                                        callback(resp);
+                                    }
+                                    >> [=](const DrogonDbException &e)
+                                    {
+                                        LOG_DEBUG << e.base().what();
+                                        auto resp = HttpResponse::newRedirectionResponse("/index_retailer");
+                                        callback(resp);
+                                    };
+                        }
+                    }
+                    >> [=](const DrogonDbException &e)
+                    {
+                        LOG_DEBUG << e.base().what();
+                        auto resp = HttpResponse::newRedirectionResponse("/index_retailer");
+                        callback(resp);
+                    }
+                    ;
+        }
     }
 }
 

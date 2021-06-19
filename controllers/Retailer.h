@@ -14,6 +14,8 @@ public:
         ADD_METHOD_TO(Retailer::newGoods, "/new_goods", Get, Post, "Log", "SessionControl");
         ADD_METHOD_TO(Retailer::retailerIndex, "/index_retailer", Get, Post, "Log", "SessionControl");
         ADD_METHOD_TO(Retailer::goodsDetail, "/goods?id={}", Get, Post, "Log", "SessionControl");
+        ADD_METHOD_TO(Retailer::shop, "/shop_manage", Get, "Log", "SessionControl");
+        ADD_METHOD_TO(Retailer::shopModify, "/shop_manage_modify", Get, Post, "Log", "SessionControl");
     METHOD_LIST_END
 
     // your declaration of processing function maybe like this:
@@ -24,4 +26,8 @@ public:
     void newGoods(const HttpRequestPtr &req, std::function<void(const HttpResponsePtr &)> &&callback);
 
     void goodsDetail(const HttpRequestPtr &req, std::function<void(const HttpResponsePtr &)> &&callback, const std::string &id);
+
+    void shop(const HttpRequestPtr &req, std::function<void(const HttpResponsePtr &)> &&callback);
+
+    void shopModify(const HttpRequestPtr &req, std::function<void(const HttpResponsePtr &)> &&callback);
 };
