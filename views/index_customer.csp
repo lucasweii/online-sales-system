@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>商家主页</title>
+    <title>买多多</title>
 
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="css/google_font.css">
@@ -23,6 +23,8 @@
   * sidebar-collapse
   * sidebar-mini
 -->
+<%c++ using namespace std; %>
+<%c++ auto goods_data = @@.get<vector<unordered_map<string, string>>>("goods_data"); %>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
     <!-- Navbar -->
@@ -30,7 +32,7 @@
         <!-- Left navbar links -->
         <ul class="navbar-nav">
             <li class="nav-item d-none d-sm-inline-block">
-                <a href="index_retailer.html" class="nav-link">返回主页</a>
+                <a href="/index_customer" class="nav-link">返回主页</a>
             </li>
         </ul>
 
@@ -38,7 +40,7 @@
         <ul class="navbar-nav ml-auto">
             <!-- Notifications Dropdown Menu -->
             <li class="nav-item">
-                <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button">
+                <a class="nav-link" href="/logout">
                     登出
                 </a>
             </li>
@@ -54,10 +56,10 @@
             <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                 <div class="image">
                     <!-- 放头像 -->
-                    <img src="./resources/profile_pic/default_profile.jpeg" class="img-circle elevation-2" alt="User Image">
+                    <img src=[[ user_pic ]] class="img-circle elevation-2" alt="User Image">
                 </div>
                 <div class="info">
-                    <a href="#" class="d-block">[顾客姓名]</a>
+                    <a href="#" class="d-block">[[ user_name ]]</a>
                 </div>
             </div>
 
@@ -67,7 +69,7 @@
                     <!-- Add icons to the links using the .nav-icon class
                          with font-awesome or any other icon font library -->
                     <li class="nav-item">
-                        <a href="./index_retailer.html" class="nav-link active">
+                        <a href="/index_customer" class="nav-link active">
                             <p>浏览商品</p>
                         </a>
                     </li>
@@ -86,7 +88,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nav-link">
+                        <a href="/profile?action=display" class="nav-link">
                             <p>个人信息</p>
                         </a>
                     </li>
@@ -124,41 +126,37 @@
                                 <table class="table table-striped table-valign-middle">
                                     <thead>
                                     <tr >
-                                        <th class="text-center">商品名称</th>
+                                        <th>图片</th>
+                                        <th>商品名称</th>
                                         <th>类别</th>
                                         <th>价格</th>
-                                        <th>月销量</th>
+                                        <th>销量</th>
                                         <th>库存</th>
                                     </tr>
                                     </thead>
                                     <tbody>
+                                    <%c++ for(auto &it : goods_data) { %>
                                     <tr>
                                         <td>
-                                            <div class="row">
-                                                <div class="col-5">
-                                                    <img src="resources/goods_pic/default_goods.png" alt="Product" class="img-lg mr-2">
-                                                </div>
-                                                <div class="col-6">
-                                                    <p class="m-4">
-                                                        <a href="#" class="text-lg">some products</a>
-                                                    </p>
-                                                </div>
-                                            </div>
+                                            <img src={% it["goods_pic"] %} alt="Product" class="img-lg mr-2">
                                         </td>
-                                        <td>日用品</td>
-                                        <td>$13 USD</td>
                                         <td>
-                                            <small class="text-success mr-1">
-                                                12%
-                                            </small>
-                                            12,000
+                                            <p class="m-4">
+                                                <a href={% "/goods_detail?id=" + it["goods_id"] %} class="text-lg">{% it["goods_name"] %}</a>
+                                            </p>
+                                        </td>
+                                        <td>{% it["goods_category"] %}</td>
+                                        <td>{% it["goods_price"] %}</td>
+                                        <td>
+                                            {% it["goods_sales"] %}
                                         </td>
                                         <td>
                                             <p class="m-2">
-                                                123
+                                                {% it["goods_stock"] %}
                                             </p>
                                         </td>
                                     </tr>
+                                    <%c++ } %>
                                     </tbody>
                                 </table>
                             </div>
