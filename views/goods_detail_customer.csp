@@ -73,7 +73,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="pages/widgets.html" class="nav-link">
+                        <a href="/my_order" class="nav-link">
                             <p>
                                 我的订单
                             </p>

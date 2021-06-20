@@ -407,6 +407,74 @@ void Customer::insertOrder(const HttpRequestPtr &req, const Customer::Order &ord
             };
 }
 
+void Customer::myOrder(const HttpRequestPtr &req, function<void(const HttpResponsePtr &)> &&callback) {
+    if(req->method() == Get) {
+        auto DbPtr = app().getDbClient();
+        HttpViewData data;
+        vector<unordered_map<string, string>> new_orders, old_orders;
+
+        Result r = DbPtr->execSqlSync("select * from `order` where `uid`=? order by `date` desc", req->session()->get<string>("uid"));
+        for(const auto &order : r) {
+            vector<unordered_map<string, string>> *orders = &new_orders;
+            if(order["state"].as<int>() >= 3) {
+                orders = &old_orders;
+            }
+
+            orders->emplace_back();
+            orders->back()["order_date"] = order["date"].as<string>();
+            orders->back()["order_id"] = order["id"].as<string>();
+            auto goods_id = order["goods_id"].as<string>();
+            orders->back()["goods_id"] = goods_id;
+            Result goods = DbPtr->execSqlSync("select `name` from `goods` where `id`=?", goods_id);
+            assert(goods.size() == 1);
+            orders->back()["goods_name"] = goods[0]["name"].as<string>();
+            orders->back()["num"] = order["num"].as<string>();
+            auto state = order["state"].as<int>();
+            string state_str;
+            switch (state) {
+                case 0: state_str="未支付";break;
+                case 1: state_str="支付成功";break;
+                case 2: state_str="物流中";break;
+                case 3: state_str="已退款";break;
+                case 4: state_str="交易完成";break;
+                default:break;
+            }
+            orders->back()["state_str"] = state_str;
+        }
+        data.insert("new_order_data", new_orders);
+        data.insert("old_order_data", old_orders);
+        data.insert("user_name", req->session()->get<string>("user_name"));
+        data.insert("user_pic", req->session()->get<string>("user_pic"));
+        auto resp = HttpResponse::newHttpViewResponse("my_order.csp", data);
+        callback(resp);
+    } else if(req->method() == Post) {
+
+    }
+}
+
+void Customer::rePay(const HttpRequestPtr &req, function<void(const HttpResponsePtr &)> &&callback, std::string id) {
+    auto DbPtr = app().getDbClient();
+    Result r = DbPtr->execSqlSync("select * from `order` where `id`=?", id);
+    assert(r.size() == 1);
+    Order order(r[0]["goods_id"].as<string>(), r[0]["num"].as<string>());
+    order.order_id = id;
+    r = DbPtr->execSqlSync("select * from `goods` where `id`=?",order.goods_id);
+    assert(r.size() == 1);
+    auto price = r[0]["price"].as<double>();
+    auto discount = r[0]["discount"].as<double>() / 10;
+    if(discount == 0){
+        discount = 1.0;
+    }
+    order.total = MyUtils::double2str(price * discount * MyUtils::str2int(order.num), 2);
+
+    vector<Order> orders;
+    orders.push_back(order);
+
+    req->session()->insert("orders", orders);
+    auto resp = HttpResponse::newRedirectionResponse("/order");
+    callback(resp);
+}
+
 
 void orderRoutine(int order_id) {
     std::chrono::seconds time(60);
