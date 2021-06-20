@@ -98,7 +98,7 @@ void Retailer::retailerIndex(const HttpRequestPtr &req, function<void(const Http
                 );
         assert(shop_ret.size() == 1);
         Result goods_ret = DbPtr->execSqlSync(
-                "select `id`, `name`, `price`, `stock`,`discount`, `pic_path`, `description` from `goods` where `shop_id` = ?",
+                "select * from `goods` where `shop_id` = ?",
                 shop_ret[0]["id"].as<int>()
                 );
         HttpViewData data;
@@ -111,6 +111,7 @@ void Retailer::retailerIndex(const HttpRequestPtr &req, function<void(const Http
             goods_data.back()["discount"] = MyUtils::double2str(goods["discount"].as<double>(), 1);
             goods_data.back()["stock"] = to_string(goods["stock"].as<int>());
             goods_data.back()["pic_path"] = goods["pic_path"].as<string>();
+            goods_data.back()["sales_num"] = to_string(goods["sales_num"].as<int>());
             auto description = goods["description"].as<string>();
             if(description.length() > 30) {
                 description =  description.substr(30);

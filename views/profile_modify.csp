@@ -166,7 +166,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="pages/widgets.html" class="nav-link">
+            <a href="/my_cart" class="nav-link">
               <p>
                 购物车
               </p>

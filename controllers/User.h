@@ -15,7 +15,7 @@ public:
         ADD_METHOD_TO(User::logout, "/logout", Get, "Log");
         ADD_METHOD_TO(User::registerUser, "/register", Get, Post, "Log");
         ADD_METHOD_TO(User::newShop, "/new_shop", Get, Post, "Log", "SessionControl");
-        ADD_METHOD_TO(User::profile, "/profile?action={}", Get, Post, "Log", "SessionControl");
+        ADD_METHOD_TO(User::profile, "/profile?action={}", Get, Post, "Log", "SessionControl", "RemoveOrders");
         //METHOD_ADD(User::your_method_name,"/{1}/{2}/list",Get);//path is /User/{arg1}/{arg2}/list
         //ADD_METHOD_TO(User::your_method_name,"/absolute/path/{1}/{2}/list",Get);//path is /absolute/path/{arg1}/{arg2}/list
 

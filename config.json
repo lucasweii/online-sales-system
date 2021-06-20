@@ -41,7 +41,10 @@
             "cur",
             "xml",
             "svg",
-            "jpeg"
+            "jpeg",
+            "woff2",
+            "woff",
+            "ttf"
         ],
         "max_connections": 100000,
         "max_connections_per_ip": 0,

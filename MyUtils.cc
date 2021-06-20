@@ -26,3 +26,11 @@ std::vector<std::string> MyUtils::split(std::string str, std::string token) {
     }
     return result;
 }
+
+int MyUtils::str2int(std::string str) {
+    stringstream ss;
+    ss << str;
+    int num;
+    ss >> num;
+    return num;
+}

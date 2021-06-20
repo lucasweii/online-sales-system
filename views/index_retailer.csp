@@ -175,6 +175,7 @@
                     <th>商品描述</th>
                     <th>价格</th>
                     <th>折扣</th>
+                    <th>销量</th>
                     <th>库存</th>
                   </tr>
                   </thead>
@@ -198,6 +199,7 @@
                     </td>
                     <td>{%  goods["price"] %}</td>
                     <td>{%  goods["discount"] %}</td>
+                    <td>{% goods["sales_num"] %}</td>
                     <td>
                       <div class="row">
                         <div class="col-6">
