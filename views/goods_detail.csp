@@ -114,14 +114,14 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="pages/widgets.html" class="nav-link">
+                        <a href="/order_process" class="nav-link active">
                             <p>
                                 订单处理
                             </p>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="pages/widgets.html" class="nav-link">
+                        <a href="/order_history" class="nav-link">
                             <p>
                                 历史订单
                             </p>
@@ -135,14 +135,14 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="pages/widgets.html" class="nav-link active">
+                        <a href="/shop_manage" class="nav-link">
                             <p>
                                 商店管理
                             </p>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nav-link">
+                        <a href="/profile?action=display" class="nav-link">
                             <p>个人信息</p>
                         </a>
                     </li>

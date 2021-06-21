@@ -160,7 +160,7 @@ User::profile(const HttpRequestPtr &req, function<void(const HttpResponsePtr &)>
             auto resp = HttpResponse::newHttpViewResponse("profile_modify.csp", data);
             callback(resp);
         }
-    } else if(req->method() == Post){
+    } else if(req->method() == Post) {
         auto param = req->parameters();
         for(auto &it : param){
             fmt::print("{}:{}\n", it.first, it.second);
@@ -201,4 +201,42 @@ User::profile(const HttpRequestPtr &req, function<void(const HttpResponsePtr &)>
         auto resp = HttpResponse::newRedirectionResponse("/profile?action=display");
         callback(resp);
     }
+}
+
+void User::bill(const HttpRequestPtr &req, function<void(const HttpResponsePtr &)> &&callback) {
+    auto DbPtr = app().getDbClient();
+    Result user = DbPtr->execSqlSync(
+            "select `account` from `user` where `uid`=?",
+            req->session()->get<string>("uid")
+    );
+    assert(user.size() == 1);
+
+    auto account = user[0]["account"].as<string>();
+
+    Result r = DbPtr->execSqlSync(
+            "select * from `bill` where `account_out`=? or `account_in`=? order by `date` desc",
+            account, account
+    );
+
+    HttpViewData data;
+    vector<unordered_map<string, string>> bill_data;
+    data.insert("isRetailer", req->session()->get<bool>("is_retailer"));
+    data.insert("user_name", req->session()->get<string>("user_name"));
+    data.insert("user_pic", req->session()->get<string>("user_pic"));
+    for(auto & bill : r){
+        bill_data.emplace_back();
+        bill_data.back()["date"] = bill["date"].as<string>();
+        bill_data.back()["id"] = bill["id"].as<string>();
+        bill_data.back()["money"] = bill["money"].as<string>();
+        bill_data.back()["account_out"] = bill["account_out"].as<string>();
+        bill_data.back()["account_in"] = bill["account_in"].as<string>();
+        if(account == bill_data.back()["account_out"]) {
+            bill_data.back()["comment"] = "支出";
+        } else {
+            bill_data.back()["comment"] = "收入";
+        }
+    }
+    data.insert("bill_data", move(bill_data));
+    auto resp = HttpResponse::newHttpViewResponse("bill_history.csp", data);
+    callback(resp);
 }

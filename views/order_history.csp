@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>商家主页</title>
+    <title>买多多</title>
 
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="css/google_font.css">
@@ -23,6 +23,8 @@
   * sidebar-collapse
   * sidebar-mini
 -->
+<%c++ using namespace std; %>
+<%c++ auto order_data = @@.get<vector<unordered_map<string, string>>>("order_data"); %>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
     <!-- Navbar -->
@@ -30,7 +32,7 @@
         <!-- Left navbar links -->
         <ul class="navbar-nav">
             <li class="nav-item d-none d-sm-inline-block">
-                <a href="index_retailer.html" class="nav-link">返回主页</a>
+                <a href="/index_retailer" class="nav-link">返回主页</a>
             </li>
         </ul>
 
@@ -62,7 +64,7 @@
                 </div>
             </li>
             <li class="nav-item">
-                <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button">
+                <a class="nav-link" href="/logout">
                     登出
                 </a>
             </li>
@@ -78,10 +80,10 @@
             <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                 <div class="image">
                     <!-- 放头像 -->
-                    <img src="./resources/profile_pic/default_profile.jpeg" class="img-circle elevation-2" alt="User Image">
+                    <img src=[[ user_pic ]] class="img-circle elevation-2" alt="User Image">
                 </div>
                 <div class="info">
-                    <a href="#" class="d-block">[商家姓名]</a>
+                    <a href="#" class="d-block">[[ user_name ]]</a>
                 </div>
             </div>
 
@@ -91,40 +93,40 @@
                     <!-- Add icons to the links using the .nav-icon class
                          with font-awesome or any other icon font library -->
                     <li class="nav-item">
-                        <a href="./index_retailer.html" class="nav-link">
+                        <a href="/index_retailer" class="nav-link">
                             <p>商品概览</p>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="pages/widgets.html" class="nav-link">
+                        <a href="/order_process" class="nav-link">
                             <p>
                                 订单处理
                             </p>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="pages/widgets.html" class="nav-link active">
+                        <a href="/order_history" class="nav-link active">
                             <p>
                                 历史订单
                             </p>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="pages/widgets.html" class="nav-link">
+                        <a href="/new_goods" class="nav-link">
                             <p>
                                 商品上新
                             </p>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="pages/widgets.html" class="nav-link">
+                        <a href="/shop_manage" class="nav-link">
                             <p>
                                 商店管理
                             </p>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nav-link">
+                        <a href="/profile?action=display" class="nav-link">
                             <p>个人信息</p>
                         </a>
                     </li>
@@ -142,10 +144,10 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>[商店名]</h1>
+                        <h1>[[ shop_name ]]</h1>
                     </div><!-- /.col -->
                     <div class="col-sm-6">
-                        <a class="float-right mr-5" href="#">历史账单</a>
+                        <a class="float-right mr-5" href="/bill">历史账单</a>
                     </div>
                 </div><!-- /.row -->
             </div><!-- /.container-fluid -->
@@ -164,25 +166,25 @@
                                 <table id="example2" class="table table-bordered table-hover">
                                     <thead>
                                     <tr>
+                                        <th>日期</th>
                                         <th>订单编号</th>
                                         <th>用户ID</th>
                                         <th>商品ID</th>
                                         <th>数量</th>
-                                        <th>备注</th>
                                         <th>状态</th>
-                                        <th>日期</th>
                                     </tr>
                                     </thead>
                                     <tbody>
+                                    <%c++ for(auto &order : order_data) { %>
                                         <tr>
-                                            <td>1</td>
-                                            <td>123</td>
-                                            <td>1sd</td>
-                                            <td>3</td>
-                                            <td>加麻加辣</td>
-                                            <td>交易成功</td>
-                                            <td>2000-12-32 13:23:23</td>
+                                            <td>{% order["date"] %}</td>
+                                            <td>{% order["id"] %}</td>
+                                            <td>{% order["uid"] %}</td>
+                                            <td>{% order["goods_id"] %}</td>
+                                            <td>{% order["num"] %}</td>
+                                            <td>{% order["state_str"] %}</td>
                                         </tr>
+                                    <%c++ } %>
                                     </tbody>
                                 </table>
                             </div>

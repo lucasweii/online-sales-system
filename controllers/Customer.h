@@ -22,6 +22,7 @@ public:
         ADD_METHOD_TO(Customer::cartManage, "/my_cart_manage", Get, Post, "Log", "SessionControl");
         ADD_METHOD_TO(Customer::myOrder, "/my_order", Get, Post, "Log", "SessionControl", "RemoveOrders");
         ADD_METHOD_TO(Customer::rePay, "/repay?id={}", Get, "Log", "SessionControl");
+        ADD_METHOD_TO(Customer::searchByName, "/search", Post, "Log", "SessionControl");
     METHOD_LIST_END
 
     // your declaration of processing function maybe like this:
@@ -44,6 +45,8 @@ public:
     void myOrder(const HttpRequestPtr &req, std::function<void(const HttpResponsePtr &)> &&callback);
 
     void rePay(const HttpRequestPtr &req, std::function<void(const HttpResponsePtr &)> &&callback, std::string id);
+
+    void searchByName(const HttpRequestPtr &req, std::function<void(const HttpResponsePtr &)> &&callback);
 private:
     struct Order {
         std::string goods_id;

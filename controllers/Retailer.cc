@@ -286,3 +286,162 @@ void Retailer::shopModify(const HttpRequestPtr &req, function<void(const HttpRes
     }
 }
 
+void Retailer::orderProcess(const HttpRequestPtr &req, function<void(const HttpResponsePtr &)> &&callback) {
+    if(req->method() == Get) {
+        auto DbPtr = app().getDbClient();
+        HttpViewData data;
+        vector<unordered_map<string, string>> orders;
+        Result r_shop = DbPtr->execSqlSync("select `id` from `shop` where `uid`=?", req->session()->get<string>("uid"));
+        assert(r_shop.size() == 1);
+        auto shop_id = r_shop[0]["id"].as<string>();
+        Result r = DbPtr->execSqlSync(
+                "select `date`,`order`.`id`, `uid`,`goods_id`,`num` from `order` inner join `goods` on `goods`.`id`=`order`.`goods_id`"
+                "where `state`=1 and `shop_id`=?"
+                "order by `date` desc",
+                shop_id
+                        );
+        for(const auto &order : r) {
+            orders.emplace_back();
+            orders.back()["date"] = order["date"].as<string>();
+            orders.back()["order_id"] = order["id"].as<string>();
+            orders.back()["uid"] = order["uid"].as<string>();
+            auto goods_id = order["goods_id"].as<string>();
+            orders.back()["goods_id"] = goods_id;
+            Result goods = DbPtr->execSqlSync("select `name` from `goods` where `id`=?", goods_id);
+            assert(goods.size() == 1);
+            orders.back()["num"] = order["num"].as<string>();
+        }
+        data.insert("order_data", orders);
+        data.insert("user_name", req->session()->get<string>("user_name"));
+        data.insert("user_name", req->session()->get<string>("shop_name"));
+        data.insert("user_pic", req->session()->get<string>("user_pic"));
+        auto resp = HttpResponse::newHttpViewResponse("order_process.csp", data);
+        callback(resp);
+    } else if(req->method() == Post) {
+        auto param = req->getParameters();
+        auto DbPtr = app().getDbClient();
+        Result r = DbPtr->execSqlSync("select `account` from `user` where`uid`=?", req->session()->get<string>("uid"));
+        assert(r.size() == 1);
+        auto account = r[0]["account"].as<string>();
+        for(auto &it : param) {
+            auto id = MyUtils::split(it.first, "@")[1];
+            fmt::print("{}\n",it.first);
+            if(it.second == "acc") {
+                *DbPtr  << "update `order` set `state` = 2 where `id`=?"
+                        << id
+                        >>[=](const Result &r)
+                        {
+                            LOG_DEBUG << "deal success <order_id:" <<id <<" > !";
+                        }
+                        >>[=](const DrogonDbException &e)
+                        {
+                            LOG_DEBUG << e.base().what();
+                        };
+            } else {
+                auto txn = DbPtr->newTransaction();
+                *txn    << "update `order` set `state` = 3 where`id`=?"
+                        << id
+                        >> [=](const Result &r)
+                        {
+                            *txn    << "select * from `order` where `id`=?"
+                                    << id
+                                    >>[=](const Result &r)
+                                    {
+                                        assert(r.size() == 1);
+                                        auto customer_uid = r[0]["uid"].as<string>();
+                                        auto num = r[0]["num"].as<int>();
+                                        *txn    << "select `account`, `price`, `discount`"
+                                                   "from `user`, `goods` "
+                                                   "where `goods`.`shop_id`=? and `user`.`uid`=?"
+                                                << req->session()->get<int>("shop_id") << customer_uid
+                                                >> [=](const Result &r)
+                                                {
+                                                    if(!r.empty()) {
+                                                        auto price = r[0]["price"].as<double>();
+                                                        auto discount = r[0]["discount"].as<double>() / 10;
+                                                        if(discount == 0) {
+                                                            discount = 1.0;
+                                                        }
+                                                        auto total = price * discount * num;
+                                                        auto date = trantor::Date::now();
+                                                        *txn    << "insert into `bill` (`account_out`, `account_in`, `date`, `money`) values (?,?,?,?)"
+                                                                << account << r[0]["account"].as<string>() << date << total
+                                                                >> [=](const Result &r)
+                                                                {
+                                                                    LOG_DEBUG << "create bill <id:" << r.insertId() <<  " > success !";
+                                                                }
+                                                                >> [=](const DrogonDbException &e)
+                                                                {
+                                                                    LOG_DEBUG << e.base().what();
+                                                                };
+                                                    } else {
+                                                        LOG_ERROR << "There should have been an account of user <id:" << customer_uid << ">";
+                                                        txn->rollback();
+                                                    }
+                                                }
+                                                >> [=](const DrogonDbException &e)
+                                                {
+                                                    LOG_DEBUG << e.base().what();
+                                                };
+
+                                    }
+                                    >>[=](const DrogonDbException &e)
+                                    {
+                                        LOG_DEBUG << e.base().what();
+                                    };
+                        }
+                        >>[=](const DrogonDbException &e)
+                        {
+                            LOG_DEBUG << e.base().what();
+                        };
+            }
+
+        }
+        auto resp = HttpResponse::newRedirectionResponse("/index_retailer");
+        callback(resp);
+    }
+}
+
+void Retailer::orderHistory(const HttpRequestPtr &req, function<void(const HttpResponsePtr &)> &&callback) {
+    auto DbPtr = app().getDbClient();
+    HttpViewData data;
+    vector<unordered_map<string, string>> orders;
+    Result r_shop = DbPtr->execSqlSync("select `id` from `shop` where `uid`=?", req->session()->get<string>("uid"));
+    assert(r_shop.size() == 1);
+    auto shop_id = r_shop[0]["id"].as<string>();
+    Result r = DbPtr->execSqlSync(
+            "select `date`, `order`.`id`, `uid`, `goods_id`, `num`, `state` from `order` inner join `goods` on `goods`.`id`=`order`.`goods_id`"
+            "where `state`>2 and `shop_id`=?"
+            "order by `date` desc",
+            shop_id
+    );
+    for(const auto &order : r) {
+        orders.emplace_back();
+        orders.back()["date"] = order["date"].as<string>();
+        orders.back()["id"] = order["id"].as<string>();
+        orders.back()["uid"] = order["uid"].as<string>();
+        auto goods_id = order["goods_id"].as<string>();
+        orders.back()["goods_id"] = goods_id;
+        Result goods = DbPtr->execSqlSync("select `name` from `goods` where `id`=?", goods_id);
+        assert(goods.size() == 1);
+        orders.back()["num"] = order["num"].as<string>();
+        auto state = order["state"].as<int>();
+        string state_str;
+        switch (state) {
+            case 0: state_str="未支付";break;
+            case 1: state_str="支付成功";break;
+            case 2: state_str="物流中";break;
+            case 3: state_str="已退款";break;
+            case 4: state_str="交易完成";break;
+            default:break;
+        }
+        orders.back()["state_str"] = state_str;
+    }
+    data.insert("order_data", orders);
+    data.insert("user_name", req->session()->get<string>("user_name"));
+    data.insert("shop_name", req->session()->get<string>("shop_name"));
+    data.insert("user_pic", req->session()->get<string>("user_pic"));
+    auto resp = HttpResponse::newHttpViewResponse("order_history.csp", data);
+    callback(resp);
+}
+

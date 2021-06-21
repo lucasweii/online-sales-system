@@ -219,8 +219,7 @@ void Customer::order(const HttpRequestPtr &req, function<void(const HttpResponse
                        };
             }
         }
-        // TODO should jump to 'my order page'
-        auto resp = HttpResponse::newRedirectionResponse("/index_customer");
+        auto resp = HttpResponse::newRedirectionResponse("/my_order");
         callback(resp);
     }
 }
@@ -448,7 +447,88 @@ void Customer::myOrder(const HttpRequestPtr &req, function<void(const HttpRespon
         auto resp = HttpResponse::newHttpViewResponse("my_order.csp", data);
         callback(resp);
     } else if(req->method() == Post) {
+        auto param = req->getParameters();
+        auto DbPtr = app().getDbClient();
+        Result r = DbPtr->execSqlSync("select `account` from `user` where`uid`=?", req->session()->get<string>("uid"));
+        assert(r.size() == 1);
+        auto account = r[0]["account"].as<string>();
+        for(auto &it : param) {
+            auto id = MyUtils::split(it.first, "@")[1];
+            if(it.second == "acc") {
+                *DbPtr  << "update `order` set `state` = 4 where `id`=?"
+                        << id
+                        >>[=](const Result &r)
+                        {
+                            LOG_DEBUG << "deal success <order_id:" <<id <<" > !";
+                        }
+                        >>[=](const DrogonDbException &e)
+                        {
+                            LOG_DEBUG << e.base().what();
+                        };
+            } else {
+                auto txn = DbPtr->newTransaction();
+                *txn    << "update `order` set `state` = 3 where`id`=?"
+                        << id
+                        >> [=](const Result &r)
+                        {
+                            *txn    << "select * from `order` where `id`=?"
+                                    << id
+                                    >>[=](const Result &r)
+                                    {
+                                        assert(r.size() == 1);
+                                        auto goods_id = r[0]["goods_id"].as<string>();
+                                        auto num = r[0]["num"].as<int>();
+                                        auto uid = req->session()->get<string>("uid");
+                                        *txn    << "select `account`, `price`, `discount`"
+                                                   "from `user` inner join ( `shop` inner join `goods` on `goods`.`shop_id` = `shop`.`id` ) "
+                                                   "on `user`.`uid`=`shop`.`uid`"
+                                                   "where `goods`.`id`=?"
+                                                << goods_id
+                                                >> [=](const Result &r)
+                                                {
+                                                    if(!r.empty()) {
+                                                        auto price = r[0]["price"].as<double>();
+                                                        auto discount = r[0]["discount"].as<double>() / 10;
+                                                        if(discount == 0) {
+                                                            discount = 1.0;
+                                                        }
+                                                        auto total = price * discount * num;
+                                                        auto date = trantor::Date::now();
+                                                        *txn    << "insert into `bill` (`account_out`, `account_in`, `date`, `money`) values (?,?,?,?)"
+                                                                << r[0]["account"].as<string>() << account << date << total
+                                                                >> [=](const Result &r)
+                                                                {
+                                                                    LOG_DEBUG << "create bill <id:" << r.insertId() <<  " > success !";
+                                                                }
+                                                                >> [=](const DrogonDbException &e)
+                                                                {
+                                                                    LOG_DEBUG << e.base().what();
+                                                                };
+                                                    } else {
+                                                        LOG_ERROR << "There should have been an account of goods <id:" << goods_id << ">";
+                                                        txn->rollback();
+                                                    }
+                                                }
+                                                >> [=](const DrogonDbException &e)
+                                                {
+                                                    LOG_DEBUG << e.base().what();
+                                                };
 
+                                    }
+                                    >>[=](const DrogonDbException &e)
+                                    {
+                                        LOG_DEBUG << e.base().what();
+                                    };
+                        }
+                        >>[=](const DrogonDbException &e)
+                        {
+                            LOG_DEBUG << e.base().what();
+                        };
+            }
+
+        }
+        auto resp = HttpResponse::newRedirectionResponse("/index_customer");
+        callback(resp);
     }
 }
 
@@ -472,6 +552,35 @@ void Customer::rePay(const HttpRequestPtr &req, function<void(const HttpResponse
 
     req->session()->insert("orders", orders);
     auto resp = HttpResponse::newRedirectionResponse("/order");
+    callback(resp);
+}
+
+void Customer::searchByName(const HttpRequestPtr &req, function<void(const HttpResponsePtr &)> &&callback) {
+    auto name = req->getParameter("search");
+    auto DbPtr = app().getDbClient();
+    Result r = DbPtr->execSqlSync("select * from goods where `name` like '%" + name + "%'");
+    HttpViewData data;
+    vector<unordered_map<string, string>> goods_data;
+    for(auto &goods : r){
+        goods_data.emplace_back();
+        goods_data.back()["goods_id"] = to_string(goods["id"].as<int>());
+        goods_data.back()["goods_name"] = goods["name"].as<string>();
+        double price = goods["price"].as<double>();
+        double discount = goods["discount"].as<double>() / 10;
+        if(discount == 0) {
+            discount = 1;
+        }
+        price *= discount;
+        goods_data.back()["goods_price"] = MyUtils::double2str(price, 2);
+        goods_data.back()["goods_stock"] = to_string(goods["stock"].as<int>());
+        goods_data.back()["goods_pic"] = goods["pic_path"].as<string>();
+        goods_data.back()["goods_category"] = goods["category"].as<string>();
+        goods_data.back()["goods_sales"] = to_string(goods["sales_num"].as<int>());
+    }
+    data.insert("goods_data", goods_data);
+    data.insert("user_pic", req->session()->get<string>("user_pic"));
+    data.insert("user_name", req->session()->get<string>("user_name"));
+    auto resp = HttpResponse::newHttpViewResponse("index_customer.csp", data);
     callback(resp);
 }
 

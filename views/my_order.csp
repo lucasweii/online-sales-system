@@ -109,7 +109,7 @@
           <div class="col-sm-6">
           </div><!-- /.col -->
           <div class="col-sm-6">
-            <a class="float-right mr-5" href="#">历史账单</a>
+            <a class="float-right mr-5" href="/bill">历史账单</a>
           </div>
         </div><!-- /.row -->
       </div><!-- /.container-fluid -->
@@ -119,7 +119,7 @@
       <div class="container-fluid">
         <div class="row">
           <div class="col-6">
-            <form action="#">
+            <form action="/my_order" method="post">
               <div class="card">
                 <div class="card-header">
                   未完成的订单
@@ -149,18 +149,19 @@
                         <%c++ if(state_str == "未支付") { %>
                         <a href={% "/repay?id="+order["order_id"] %} >重新支付</a>
                         <%c++ } else if(state_str =="支付成功") { %>
-                         等待发货
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name={% "process@"+order["order_id"] %} id={% "rej@"+order["order_id"] %} value="rej">
+                          <label class="form-check-label" for={% "rej@"+order["order_id"] %}>申请退款</label>
+                        </div>
                         <%c++ } else if(state_str =="物流中") { %>
-                        <form>
-                          <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name={% "process@"+order["order_id"] %} id={% "acc@"+order["order_id"] %} value="acc">
-                            <label class="form-check-label" for={% "acc@"+order["order_id"] %}>确认发货</label>
-                          </div>
-                          <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name={% "process@"+order["order_id"] %} id={% "rej@"+order["order_id"] %} value="rej">
-                            <label class="form-check-label" for={% "rej@"+order["order_id"] %}>申请退款</label>
-                          </div>
-                        </form>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name={% "process@"+order["order_id"] %} id={% "acc@"+order["order_id"] %} value="acc">
+                          <label class="form-check-label" for={% "acc@"+order["order_id"] %}>确认收货</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name={% "process@"+order["order_id"] %} id={% "rej@"+order["order_id"] %} value="rej">
+                          <label class="form-check-label" for={% "rej@"+order["order_id"] %}>申请退款</label>
+                        </div>
                         <%c++ } %>
                       </td>
                     </tr>

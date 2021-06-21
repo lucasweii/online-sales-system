@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>买多多</title>
+
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="css/google_font.css">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="css/all.min.css">
+  <!-- icheck bootstrap -->
+  <link rel="stylesheet" href="css/icheck-bootstrap.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="css/adminlte.min.css">
+</head>
+<!--
+`body` tag options:
+
+  Apply one or more of the following classes to to the body tag
+  to get the desired effect
+
+  * sidebar-collapse
+  * sidebar-mini
+-->
+<%c++ using namespace std; %>
+<%c++ auto isRetailer = @@.get<bool>("isRetailer"); %>
+  <%c++ auto bill_data = @@.get<vector<unordered_map<string, string>>>("bill_data"); %>
+  <body class="hold-transition sidebar-mini">
+  <div class="wrapper">
+    <!-- Navbar -->
+    <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+      <!-- Left navbar links -->
+      <ul class="navbar-nav">
+        <li class="nav-item d-none d-sm-inline-block">
+          <%c++ if(isRetailer) { %>
+          <a href="/index_retailer" class="nav-link">返回主页</a>
+          <%c++ } else { %>
+          <a href="/index_customer" class="nav-link">返回主页</a>
+          <%c++ } %>
+        </li>
+      </ul>
+
+    <!-- Right navbar links -->
+    <ul class="navbar-nav ml-auto">
+      <!-- Notifications Dropdown Menu -->
+      <li class="nav-item dropdown">
+        <a class="nav-link" data-toggle="dropdown" href="#">
+          <img src="resources/icons/bell.svg" alt="Bootstrap" width="20" height="20">
+          <span class="badge badge-warning navbar-badge">15</span>
+        </a>
+        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+          <span class="dropdown-item dropdown-header">15 Notifications</span>
+          <div class="dropdown-divider"></div>
+          <a href="#" class="dropdown-item">
+            <i class="fas fa-envelope mr-2"></i> 4 new messages
+            <span class="float-right text-muted text-sm">3 mins</span>
+          </a>
+          <div class="dropdown-divider"></div>
+          <a href="#" class="dropdown-item">
+            <i class="fas fa-users mr-2"></i> 8 friend requests
+            <span class="float-right text-muted text-sm">12 hours</span>n
+          </a>
+          <div class="dropdown-divider"></div>
+          <a href="#" class="dropdown-item">
+            <i class="fas fa-file mr-2"></i> 3 new reports
+            <span class="float-right text-muted text-sm">2 days</span>
+          </a>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/logout">
+          登出
+        </a>
+      </li>
+    </ul>
+  </nav>
+  <!-- /.navbar -->
+
+  <!-- Main Sidebar Container -->
+    <aside class="main-sidebar sidebar-dark-primary elevation-4">
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <!-- Sidebar user panel (optional) -->
+        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+          <div class="image">
+            <!-- 放头像 -->
+            <img src=[[ user_pic ]] class="img-circle elevation-2" alt="User Image">
+          </div>
+          <div class="info">
+            <a href="#" class="d-block">[[ user_name ]]</a>
+          </div>
+        </div>
+
+        <!-- Sidebar Menu -->
+        <nav class="mt-2">
+          <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+            <!-- Add icons to the links using the .nav-icon class
+                 with font-awesome or any other icon font library -->
+            <%c++ if(isRetailer) { %>
+            <li class="nav-item">
+              <a href="/index_retailer" class="nav-link">
+                <p>商品概览</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="/order_process" class="nav-link">
+                <p>
+                  订单处理
+                </p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="/order_history" class="nav-link active">
+                <p>
+                  历史订单
+                </p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="/new_goods" class="nav-link">
+                <p>
+                  商品上新
+                </p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="/shop_manage" class="nav-link">
+                <p>
+                  商店管理
+                </p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="/profile?action=display" class="nav-link">
+                <p>个人信息</p>
+              </a>
+            </li>
+            <%c++ } else { %>
+            <li class="nav-item">
+              <a href="/index_customer" class="nav-link">
+                <p>浏览商品</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="/my_order" class="nav-link active">
+                <p>
+                  我的订单
+                </p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="/my_cart" class="nav-link">
+                <p>
+                  购物车
+                </p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="/profile?action=display" class="nav-link">
+                <p>个人信息</p>
+              </a>
+            </li>
+            <%c++ } %>
+          </ul>
+        </nav>
+        <!-- /.sidebar-menu -->
+      </div>
+      <!-- /.sidebar -->
+    </aside>
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">历史账单</h3>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <table id="example2" class="table table-bordered table-hover">
+                  <thead>
+                  <tr>
+                    <th></th>
+                    <th>日期</th>
+                    <th>账单编号</th>
+                    <th>支付方卡号</th>
+                    <th>收款方卡号</th>
+                    <th>金额</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <%c++ for(auto &bill : bill_data) { %>
+                  <tr>
+                    <td>{% bill["comment"] %}</td>
+                    <td>{% bill["date"] %}</td>
+                    <td>{% bill["id"] %}</td>
+                    <td>{% bill["account_out"] %}</td>
+                    <td>{% bill["account_in"] %}</td>
+                    <td>{% bill["money"] %}</td>
+                  </tr>
+                  <%c++ } %>
+                  </tbody>
+                </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+
+            <!-- /.card -->
+          </div>
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+      </div>
+      <!-- /.container-fluid -->
+    </section>
+    <!-- Main content -->
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+
+  <!-- /.control-sidebar -->
+
+  <!-- Main Footer -->
+  <footer class="main-footer">
+    <strong>Copyright &copy; 2021</strong> wei
+  </footer>
+</div>
+<!-- ./wrapper -->
+
+<!-- REQUIRED SCRIPTS -->
+
+<!-- jQuery -->
+<script src="js/jquery.min.js"></script>
+<!-- Bootstrap 4 -->
+<script src="js/bootstrap.bundle.min.js"></script>
+<!-- AdminLTE App -->
+<script src="js/adminlte.min.js"></script>
+
+<!-- OPTIONAL SCRIPTS -->
+<script src="js/Chart.min.js"></script>
+</body>
+</html>
