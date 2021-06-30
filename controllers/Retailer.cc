@@ -49,9 +49,7 @@ void Retailer::newGoods(const HttpRequestPtr &req, std::function<void(const Http
                     LOG_DEBUG << e.base().what();
                 };
 
-        auto resp = HttpResponse::newHttpResponse();
-        resp->setStatusCode(k200OK);
-        resp->setBody("add new goods success!");
+        auto resp = HttpResponse::newRedirectionResponse("/index_retailer");
         callback(resp);
     }
 }
@@ -313,7 +311,7 @@ void Retailer::orderProcess(const HttpRequestPtr &req, function<void(const HttpR
         }
         data.insert("order_data", orders);
         data.insert("user_name", req->session()->get<string>("user_name"));
-        data.insert("user_name", req->session()->get<string>("shop_name"));
+        data.insert("shop_name", req->session()->get<string>("shop_name"));
         data.insert("user_pic", req->session()->get<string>("user_pic"));
         auto resp = HttpResponse::newHttpViewResponse("order_process.csp", data);
         callback(resp);

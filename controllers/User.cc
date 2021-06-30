@@ -74,7 +74,7 @@ void User::registerUser(const HttpRequestPtr &req, function<void(const HttpRespo
                     req->session()->insert("uid", uid);
                     req->session()->insert("user_name", name);
                     req->session()->insert("is_retailer", isRetailer);
-                    req->session()->insert("user_pic", "./resources/profile_pic/default.jpeg");
+                    req->session()->insert("user_pic", string("./resources/profile_pic/default.jpeg"));
                     if(isRetailer){
                         Result ret = DbPtr->execSqlSync(
                                 "select * from `shop` where `shop`.`uid`=?",
